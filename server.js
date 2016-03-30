@@ -39,3 +39,11 @@ app.use("/", express.static(__dirname + "/public/"));
 var server = http.createServer(app).listen(port, function() {
   console.log("server listening on port " + port);
 });
+
+// initialize socket.io
+var io = require('socket.io').listen(server);
+
+// set a stream listener for tweets matching tracking keywords
+twit.stream('statuses/filter',{ track: 'scotch_io, #scothio'}, function(stream){
+  streamHandler(stream,io);
+});
