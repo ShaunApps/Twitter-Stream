@@ -27,7 +27,30 @@ module.exports = TweetsApp = React.createClass({
     this.setState({tweets: updated, count: count, skip: skip});
   },
 
-  
+  // Method to get JSON from server by page
+  getPage: function(page){
+
+    // Setup our ajax request
+    var request = new XMLHttpRequest(), self = this;
+    request.open('GET', 'page/' + page + "/" + this.state.skip, true);
+    request.onload = function() {
+
+      // If everything is working...
+      if (request.status >= 200 && request.status < 400){
+
+        // load our next page
+        self.loadPagedTweets(JSON.parse(request.responseText));
+
+      } else {
+
+        // Set application state (not paging, paging complete)
+        self.setState({paging: false, done: true});
+      }
+    };
+
+    // Fire!
+    request.send()
+  }
 
 
 
