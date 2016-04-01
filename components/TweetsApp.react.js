@@ -52,6 +52,22 @@ module.exports = TweetsApp = React.createClass({
     request.send()
   }
 
+  // Method to show the unread tweets
+    showNewTweets: function(){
+
+      // Get current application state
+      var updated = this.state.tweets;
+
+      // Mark our tweets active
+      updated.forEach(function(tweet){
+        tweet.active = true;
+      });
+
+      // Set application state (active tweets + reset unread count)
+      this.setState({tweets: updated, count: 0});
+
+    },
+
 
 
 
