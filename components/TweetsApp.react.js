@@ -69,38 +69,58 @@ module.exports = TweetsApp = React.createClass({
     },
 
 
-// Method to load tweets fetched from the server
-loadPagedTweets: function(tweets){
+  // Method to load tweets fetched from the server
+  loadPagedTweets: function(tweets){
 
 
-  var self = this;
+    var self = this;
 
-  // If there are still tweets...
-  if(tweets.length > 0) {
+    // If there are still tweets...
+    if(tweets.length > 0) {
 
-    // Get current application state
-    var updated = this.state.tweets;
+      // Get current application state
+      var updated = this.state.tweets;
 
-    // Push them onto the end of the current tweets array
-    tweets.forEach(function(tweet){
-      updated.push(tweet);
-    });
+      // Push them onto the end of the current tweets array
+      tweets.forEach(function(tweet){
+        updated.push(tweet);
+      });
 
-    setTimeout(function(){
+      setTimeout(function(){
 
-      // Set application state (Not paging, add tweets)
-      self.setState({tweets: updated, paging: false});
+        // Set application state (Not paging, add tweets)
+        self.setState({tweets: updated, paging: false});
 
-    }, 1000);
+      }, 1000);
 
-  } else {
+    } else {
 
-    // Set application state (Not paging, paging complete)
-    this.setState({done: true, paging: false});
+      // Set application state (Not paging, paging complete)
+      this.setState({done: true, paging: false});
 
-  }
-},
+    }
+  },
 
+
+  // Method to check if more tweets should be loaded, by scroll position
+  checkWindowScroll: function(){
+
+    // Get scroll pos & window data
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    var s = document.body.scrollTop;
+    var scrolled = (h + s) > document.body.offsetHeight;
+
+    // If scrolled enough, not currently paging and not complete...
+    if(scrolled && !this.state.paging && !this.state.done) {
+
+      // Set application state (Paging, Increment page)
+      this.setState({paging: true, page: this.state.page + 1});
+
+      // Get the next page of tweets from the server
+      this.getPage(this.state.page);
+
+    }
+  },
 
 
   // Render the component
