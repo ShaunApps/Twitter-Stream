@@ -69,6 +69,38 @@ module.exports = TweetsApp = React.createClass({
     },
 
 
+// Method to load tweets fetched from the server
+loadPagedTweets: function(tweets){
+
+
+  var self = this;
+
+  // If there are still tweets...
+  if(tweets.length > 0) {
+
+    // Get current application state
+    var updated = this.state.tweets;
+
+    // Push them onto the end of the current tweets array
+    tweets.forEach(function(tweet){
+      updated.push(tweet);
+    });
+
+    setTimeout(function(){
+
+      // Set application state (Not paging, add tweets)
+      self.setState({tweets: updated, paging: false});
+
+    }, 1000);
+
+  } else {
+
+    // Set application state (Not paging, paging complete)
+    this.setState({done: true, paging: false});
+
+  }
+},
+
 
 
   // Render the component
