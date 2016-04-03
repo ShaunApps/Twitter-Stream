@@ -122,6 +122,26 @@ module.exports = TweetsApp = React.createClass({
     }
   },
 
+  // Called directly after component rendering, only on client
+  componentDidMount: function(){
+
+    // Preserve self reference
+    var self = this;
+
+    // Initialize socket.io
+    var socket = io.connect();
+
+    // On tweet event emission...
+    socket.on('tweet', function (data) {
+
+      // Add a tweet to our queue
+      self.addTweet(data);
+
+    });
+
+    // Attach scroll event to the window for inifinity paging
+  }
+
   // Set the initial component state
   getInitialState: function(props){
 
