@@ -140,7 +140,8 @@ module.exports = TweetsApp = React.createClass({
     });
 
     // Attach scroll event to the window for inifinity paging
-  }
+    window.addEventListener('scroll', this.checkWindowScroll);
+  },
 
   // Set the initial component state
   getInitialState: function(props){
