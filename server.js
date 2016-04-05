@@ -21,6 +21,7 @@ app.set('view engine', handlebars);
 app.disable('etag');
 
 // connect to mongo db
+// issue in connecting to mongo
 mongoose.connect('mongodb://local-host/twitter-stream');
 
 // create an ntwitter instance

@@ -8,10 +8,10 @@ var NotificationBar = require('./NotificationBar.react.js');
 // Export the TweetsApp component
 module.exports = TweetsApp = React.createClass({
 
-  // Method to add tweet to timeline
+  // Method to add a tweet to our timeline
   addTweet: function(tweet){
 
-    // get current application state
+    // Get current application state
     var updated = this.state.tweets;
 
     // Increment the unread count
@@ -25,6 +25,7 @@ module.exports = TweetsApp = React.createClass({
 
     // Set application state
     this.setState({tweets: updated, count: count, skip: skip});
+
   },
 
   // Method to get JSON from server by page
@@ -35,47 +36,48 @@ module.exports = TweetsApp = React.createClass({
     request.open('GET', 'page/' + page + "/" + this.state.skip, true);
     request.onload = function() {
 
-      // If everything is working...
+      // If everything is cool...
       if (request.status >= 200 && request.status < 400){
 
-        // load our next page
+        // Load our next page
         self.loadPagedTweets(JSON.parse(request.responseText));
 
       } else {
 
-        // Set application state (not paging, paging complete)
+        // Set application state (Not paging, paging complete)
         self.setState({paging: false, done: true});
+
       }
     };
 
     // Fire!
-    request.send()
-  }
+    request.send();
+
+  },
 
   // Method to show the unread tweets
-    showNewTweets: function(){
+  showNewTweets: function(){
 
-      // Get current application state
-      var updated = this.state.tweets;
+    // Get current application state
+    var updated = this.state.tweets;
 
-      // Mark our tweets active
-      updated.forEach(function(tweet){
-        tweet.active = true;
-      });
+    // Mark our tweets active
+    updated.forEach(function(tweet){
+      tweet.active = true;
+    });
 
-      // Set application state (active tweets + reset unread count)
-      this.setState({tweets: updated, count: 0});
+    // Set application state (active tweets + reset unread count)
+    this.setState({tweets: updated, count: 0});
 
-    },
-
+  },
 
   // Method to load tweets fetched from the server
   loadPagedTweets: function(tweets){
 
-
+    // So meta lol
     var self = this;
 
-    // If there are still tweets...
+    // If we still have tweets...
     if(tweets.length > 0) {
 
       // Get current application state
@@ -86,6 +88,8 @@ module.exports = TweetsApp = React.createClass({
         updated.push(tweet);
       });
 
+      // This app is so fast, I actually use a timeout for dramatic effect
+      // Otherwise you'd never see our super sexy loader svg
       setTimeout(function(){
 
         // Set application state (Not paging, add tweets)
@@ -100,7 +104,6 @@ module.exports = TweetsApp = React.createClass({
 
     }
   },
-
 
   // Method to check if more tweets should be loaded, by scroll position
   checkWindowScroll: function(){
@@ -120,27 +123,6 @@ module.exports = TweetsApp = React.createClass({
       this.getPage(this.state.page);
 
     }
-  },
-
-  // Called directly after component rendering, only on client
-  componentDidMount: function(){
-
-    // Preserve self reference
-    var self = this;
-
-    // Initialize socket.io
-    var socket = io.connect();
-
-    // On tweet event emission...
-    socket.on('tweet', function (data) {
-
-      // Add a tweet to our queue
-      self.addTweet(data);
-
-    });
-
-    // Attach scroll event to the window for inifinity paging
-    window.addEventListener('scroll', this.checkWindowScroll);
   },
 
   // Set the initial component state
@@ -164,9 +146,29 @@ module.exports = TweetsApp = React.createClass({
     this.setState(this.getInitialState(newProps));
   },
 
+  // Called directly after component rendering, only on client
+  componentDidMount: function(){
+
+    // Preserve self reference
+    var self = this;
+
+    // Initialize socket.io
+    var socket = io.connect();
+
+    // On tweet event emission...
+    socket.on('tweet', function (data) {
+
+        // Add a tweet to our queue
+        self.addTweet(data);
+
+    });
+
+    // Attach scroll event to the window for infinity paging
+    window.addEventListener('scroll', this.checkWindowScroll);
+
+  },
 
   // Render the component
-
   render: function(){
 
     return (
@@ -178,4 +180,5 @@ module.exports = TweetsApp = React.createClass({
     )
 
   }
+
 });
